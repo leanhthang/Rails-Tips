@@ -18,4 +18,4 @@
 ## To check that your version of Ruby uses jemalloc, run: 
     ruby -r rbconfig -e "puts RbConfig::CONFIG['LIBS']" 
     ruby -r rbconfig -e "puts RbConfig::CONFIG['MAINLIBS']" # ruby >= 2.6.x
-    Output: -lpthread -ljemalloc -ldl -lobjc ( -ljemalloc => success )
+    Output: -lpthread -ljemalloc -ldl -lobjc #==> success 
