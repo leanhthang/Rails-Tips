@@ -7,7 +7,8 @@
     sudo yum install jemalloc-devel
 
 ## Ubuntu
-    sudo apt-get install libjemalloc1 sudo apt install libjemalloc-dev 
+    sudo apt-get install libjemalloc1 
+    sudo apt install libjemalloc-dev 
 
 ## RBENV: 
     RUBY_CONFIGURE_OPTS=--with-jemalloc rbenv install 2.5.1 
