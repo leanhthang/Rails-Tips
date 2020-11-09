@@ -1,10 +1,11 @@
 
+# Linux - RHEL/Fedora/Centos
 ```bash
   yum install -y advancecomp gifsicle jhead libjpeg optipng pngquant
   yum install -y libjpeg-turbo-utils
 ```
-# jpegoptim
 
+# jpegoptim
 ```bash
   cd /tmp
   curl -O https://www.kokkonen.net/tjko/src/jpegoptim-1.4.7.tar.gz
@@ -12,6 +13,7 @@
   cd jpegoptim-1.4.7
   ./configure && make && make install
 ```
+
 # pngcrush
 ```bash
   cd /tmp
