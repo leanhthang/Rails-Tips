@@ -1,4 +1,4 @@
-# refers: https://guides.wp-bullet.com/batch-optimize-jpg-lossy-linux-command-line-with-jpeg-recompress/
+## refers: https://guides.wp-bullet.com/batch-optimize-jpg-lossy-linux-command-line-with-jpeg-recompress/
 # Optimize JPG Lossy Linux with jpeg-recompress
 sudo apt-get install build-essential autoconf pkg-config nasm libtool git gettext libjpeg-dev -y
 # Build mozjpeg, the latest tar.gz can be found here which you can replace below in the wget line.
