@@ -32,3 +32,6 @@
   jpeg-recompress --quality medium --method ssim image.jpg output.jpg
   jpeg-recompress --quality high --accurate --method smallfry --min 60 image.jpg image.jpg
 ```
+### --method: smallfry/ ssim /MPE
+### If you want to be extra accurate but slower you can add the --accurate flag
+### You can also specify the minimum quality allowed with --min and jpeg-compress will do comparisons to ensure the best compression ratio without losing quality.
