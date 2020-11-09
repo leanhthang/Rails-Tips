@@ -12,7 +12,7 @@
     RUBY_CONFIGURE_OPTS=--with-jemalloc rbenv install 2.5.1 
     
 ## RVM: 
-    rvm reinstall 2.4.1 -C —with-jemalloc 
+    rvm reinstall 2.6.6 -C --with-jemalloc 
 ## To check that your version of Ruby uses jemalloc, run: 
     ruby -r rbconfig -e "puts RbConfig::CONFIG['LIBS']" 
     ruby -r rbconfig -e "puts RbConfig::CONFIG['MAINLIBS']" # ruby >= 2.6.x
