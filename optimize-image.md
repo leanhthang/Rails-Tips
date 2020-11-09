@@ -35,3 +35,8 @@
 ### --method: smallfry/ ssim /MPE
 ### If you want to be extra accurate but slower you can add the --accurate flag
 ### You can also specify the minimum quality allowed with --min and jpeg-compress will do comparisons to ensure the best compression ratio without losing quality.
+
+# Stripping EXIF Data with exiftool
+
+find /var/www/wp-bullet.com/wp-content/uploads -type f -iname "*.jpg" -exec exiftool -overwrite_original -all= \{} \;
+sudo apt install exiftool
