@@ -4,7 +4,6 @@
   yum install -y libjpeg-turbo-utils
 ```
 # jpegoptim
-## Replace X.Y.Z with latest version number from http://www.kokkonen.net/tjko/projects.html#jpegoptim.
 
 ```bash
   cd /tmp
@@ -13,7 +12,7 @@
   cd jpegoptim-1.4.7
   ./configure && make && make install
 ```
-
+# pngcrush
 ```bash
   cd /tmp
   curl -O https://iweb.dl.sourceforge.net/project/pmt/pngcrush/1.8.13/pngcrush-1.8.13.tar.gz
