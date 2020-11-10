@@ -22,3 +22,14 @@
   cd pngcrush-1.8.13
   make && cp -f pngcrush /usr/local/bin
 ```
+
+# Image processing
+install vips lib
+```bash
+  curl -O https://github.com/libvips/libvips/releases/download/v8.10.2/vips-8.10.2.tar.gz
+  cd /tmp
+  tar xf vips-8.10.2.tar.gz
+  cd vips-7.30.2
+  yum install glib2-devel
+  ./configure && make && make install
+```
