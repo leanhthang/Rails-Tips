@@ -1,5 +1,5 @@
 # Gem image_optim
-# Refers: https://github.com/toy/image_optim
+## Refers: https://github.com/toy/image_optim
 # Linux - RHEL/Fedora/Centos
 ```bash
   yum install -y advancecomp gifsicle jhead libjpeg optipng pngquant
