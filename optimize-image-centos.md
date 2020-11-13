@@ -24,7 +24,7 @@
   make && cp -f pngcrush /usr/local/bin
 ```
 
-# GImage processing
+# Gem Image processing
 install vips lib
 ```bash
   curl -O https://github.com/libvips/libvips/releases/download/v8.10.2/vips-8.10.2.tar.gz
