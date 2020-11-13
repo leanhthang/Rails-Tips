@@ -9,9 +9,9 @@
 # jpegoptim
 ```bash
   cd /tmp
-  curl -O https://www.kokkonen.net/tjko/src/jpegoptim-1.4.7.tar.gz
-  tar zxf jpegoptim-1.4.7.tar.gz
-  cd jpegoptim-1.4.7
+  curl -O https://www.kokkonen.net/tjko/src/jpegoptim-1.4.6.tar.gz
+  tar zxf jpegoptim-1.4.6.tar.gz
+  cd jpegoptim-1.4.6
   ./configure && make && make install
 ```
 
