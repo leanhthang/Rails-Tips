@@ -1,7 +1,6 @@
 # Setup Jemalloc
 
-## CentOS
-    CentOS/ Redhat:
+## CentOS/ Redhat
      yum install epel-release jemalloc  jemalloc-devel -y
 
 ## Ubuntu
