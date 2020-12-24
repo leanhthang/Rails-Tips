@@ -39,4 +39,5 @@ https://github.com/mperham/sidekiq/blob/master/examples/upstart/sidekiq.conf
   SyslogIdentifier=sidekiq
 
   [Install]
-  WantedBy=multi-user.target```
+  WantedBy=multi-user.target
+ ```
