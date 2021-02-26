@@ -1,7 +1,42 @@
 https://github.com/mperham/sidekiq/blob/master/examples/systemd/sidekiq.service
 https://github.com/mperham/sidekiq/blob/master/examples/upstart/workers.conf
 https://github.com/mperham/sidekiq/blob/master/examples/upstart/sidekiq.conf
+# Rails setup
+```ruby
+# Background job framework
+gem 'sidekiq', '~> 6.1', '>= 6.1.2'
+gem 'sidekiq-cron', '~> 1.2'
+```
+> Add file config/sidekiq.yml
+```ruby
+# Reference 
+# https://github.com/mperham/sidekiq/blob/master/examples/config.yml
+# https://github.com/mperham/sidekiq/wiki/Advanced-Options
+:verbose: false
+:concurrency: 10
+:timeout: 25
 
+:queues:
+  - critical
+  - default
+  - low
+
+production:
+  :concurrency: 25
+development:
+  :concurrency: 15
+```
+# Setup by systemd
+Add file sidekiq.service to systemd folder. This file tells systemd how to run Sidekiq as a 24/7 long-running daemon.
+### How to run
+> 
+>
+> /usr/lib/systemd/system (CentOS) 
+>
+> /lib/systemd/system (Ubuntu)
+- systemctl enable sidekiq
+- systemctl {start,stop,restart} sidekiq
+### Config
 
 # Sidekiq service
 ```ruby
@@ -41,3 +76,6 @@ SyslogIdentifier=sidekiq
 [Install]
 WantedBy=multi-user.target
  ```
+
+
+https://gist.github.com/nghuuphuoc/7801123
