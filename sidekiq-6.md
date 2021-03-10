@@ -39,6 +39,7 @@ Add file sidekiq.service to systemd folder. This file tells systemd how to run S
 ### Config
 
 # Sidekiq service
+> detect gem path ```gem environment```
 ```ruby
 [Unit]
 Description=sidekiq

@@ -1,4 +1,7 @@
-# Gem image_optim
+# Rails Gem 
+  > image_optim
+  >
+  > image_optim_pack
 ## Refers: https://github.com/toy/image_optim
 # Linux - RHEL/Fedora/Centos
 ```bash
