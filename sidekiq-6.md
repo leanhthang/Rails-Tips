@@ -80,3 +80,35 @@ WantedBy=multi-user.target
 
 
 https://gist.github.com/nghuuphuoc/7801123
+
+```ruby
+# Ubuntu && RBENV
+[Unit]
+Description=sidekiq
+# start us only once the network and logging subsystems are available,
+# consider adding redis-server.service if Redis is local and systemd-managed.
+After=syslog.target network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/lat/advn/sunlight.acecom.vn
+ExecStart=/home/lat/.rbenv/shims/bundle exec sidekiq -C config/sidekiq.yml
+User=lat
+Group=root
+UMask=0002
+
+
+RestartSec=1
+Restart=on-failure
+
+# output goes to /var/log/syslog
+StandardOutput=syslog
+StandardError=syslog
+
+# This will default to "bundler" if we don't specify it
+SyslogIdentifier=sidekiq
+
+[Install]
+WantedBy=multi-user.target
+
+```
