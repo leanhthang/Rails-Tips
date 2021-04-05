@@ -2,6 +2,7 @@ https://www.tecmint.com/install-logrotate-to-manage-log-rotation-in-linux/
 
 # Script delete old backup 
 ```ruby
+# Create file script_delete_old_backup.rb
 require 'fileutils'
 
 folders = (Dir.entries(Dir.getwd) - ['.', '..']).sort.reverse.select{|x| x.to_i > 19900000 }
