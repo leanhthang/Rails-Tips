@@ -15,6 +15,7 @@ end
 ```
 # Script create backup
 ```bash
+# Create file backup.sh
 ####=========####
 PATH_DSTAMP=$(date "+%d-%m-%Y_%H:%M:%S")
 PATH_DATE=$(date "+%Y%m%d")
@@ -28,7 +29,7 @@ mkdir $BACKUP_PATH/sources
 sudo -u postgres /usr/pgsql-10/bin/pg_dump sunlight > $BACKUP_PATH/db/sunlight-$PATH_DSTAMP.sql
 # Backup file
 tar --exclude='.git' --exclude='vendor' --exclude='log' --exclude='tmp' -czvf $BACKUP_PATH/sources/sunlight_file.tar $PJ_PATH
-# Destroy old file over 5 days
+# Destroy old files that over 5 days
 #cd $BACKUP_PATH/sources/ find . -mtime +5 -type f -print0 | xargs -0 rm
 #cd $BACKUP_PATH/db/ find . -mtime +5 -type f -print0 | xargs -0 rm
 ruby script_delete_old_backup.rb
