@@ -44,5 +44,7 @@ sudo apt install exiftool
 
 # Vips
 ## Referencnes: https://libvips.github.io/libvips/install.html
+```ruby
 sudo apt update
 sudo apt install libvips-dev -y
+```
