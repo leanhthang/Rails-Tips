@@ -41,3 +41,8 @@ jpeg-recompress --quality high --accurate --method smallfry --min 60 image.jpg i
 find /var/www/wp-bullet.com/wp-content/uploads -type f -iname "*.jpg" -exec exiftool -overwrite_original -all= \{} \;
 sudo apt install exiftool
 ```
+
+# Vips
+## Referencnes: https://libvips.github.io/libvips/install.html
+sudo apt update
+sudo apt install libvips-dev -y
