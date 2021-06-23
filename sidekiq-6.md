@@ -96,3 +96,9 @@ WantedBy=multi-user.target
 
 # Sidekiq service multiple services
 https://gist.github.com/Loriowar/fdf8a379ba820de9dd55c97b6fa10594
+
+# Some error: 
+```journalctl -xe
+/usr/bin/env: ruby_executable_hooks: No such file or directory
+sudo gem install --user-install executable-hooks
+```
