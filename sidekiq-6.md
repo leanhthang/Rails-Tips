@@ -1,3 +1,6 @@
+# Install redis 6
+https://tecadmin.net/install-redis-centos/
+# Reference:
 https://github.com/mperham/sidekiq/blob/master/examples/systemd/sidekiq.service
 https://github.com/mperham/sidekiq/blob/master/examples/upstart/workers.conf
 https://github.com/mperham/sidekiq/blob/master/examples/upstart/sidekiq.conf
