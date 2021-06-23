@@ -1,5 +1,5 @@
 # Install redis 6
-https://tecadmin.net/install-redis-centos/
+https://www.howtoforge.com/how-to-install-and-secure-redis-on-centos-7/
 # Reference:
 https://github.com/mperham/sidekiq/blob/master/examples/systemd/sidekiq.service
 https://github.com/mperham/sidekiq/blob/master/examples/upstart/workers.conf
