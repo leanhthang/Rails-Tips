@@ -17,3 +17,5 @@ echo "finished sidekiq check"
 # edit crontab: crontab -e
 # Run job check sidekiq process per minutes
 # * * * * * source ~/.check_sidekiq.sh
+# Check crobtab list available
+# crontab -l
