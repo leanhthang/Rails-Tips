@@ -17,6 +17,12 @@ echo "finished sidekiq check"
 # Set crontab
 # edit crontab: crontab -e
 # Run job check sidekiq process per minutes
-# * * * * * source ~/.check_sidekiq.sh
+```ruby
+# https://www.cyberciti.biz/faq/linux-unix-crontab-change-mailto-settings/
+# Disable email alert for rest of jobs
+MAILTO=""
+ * * * * * source ~/.check_sidekiq.sh
+ ```
 # Check crobtab list available
 # crontab -l
+
