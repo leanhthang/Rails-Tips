@@ -2,6 +2,7 @@
 # Optimize JPG Lossy Linux with jpeg-recompress
 ```bash
   sudo apt-get install build-essential autoconf pkg-config nasm libtool git gettext libjpeg-dev -y
+  sudo apt-get install -y optipng
 ```
 # Build mozjpeg, the latest tar.gz can be found here which you can replace below in the wget line.
 
@@ -43,7 +44,7 @@ sudo apt install exiftool
 ```
 
 # Vips
-## Referencnes: https://libvips.github.io/libvips/install.html
+## Referencnes: https://www.libvips.org/install.html
 ```ruby
 sudo apt update
 sudo apt install libvips-dev -y
