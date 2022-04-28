@@ -102,3 +102,13 @@ https://gist.github.com/Loriowar/fdf8a379ba820de9dd55c97b6fa10594
 /usr/bin/env: ruby_executable_hooks: No such file or directory
 sudo gem install --user-install executable-hooks
 ```
+## Rails Sidekiq commandline
+# Clear counter of failed and processed
+Sidekiq::Stats.new.reset('failed', 'processed')
+# Show all queue
+Sidekiq::Queue.all
+# Clear Queue
+Sidekiq::Queue.all.map(&:clear)
+# Clear all redis
+Sidekiq.redis(&:flushdb)
+
