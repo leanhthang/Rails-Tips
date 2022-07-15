@@ -6,6 +6,11 @@ mysql -u root -p
 ```
 # Create user
 ```CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'new_password';```
+<!-- Set permission read only -->
+```sql
+GRANT SELECT, SHOW VIEW ON databasename.* TO 'username'@'localhost' IDENTIFIED BY 'password';
+FLUSH PRIVILEGES;
+```
 # Change pass
 ```ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'insert_password';```
 # Create database
