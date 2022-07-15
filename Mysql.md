@@ -6,7 +6,7 @@ mysql -u root -p
 ```
 # Create user
 ```CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'new_password';```
-<!-- Set permission read only -->
+## Set permission read only
 ```sql
 GRANT SELECT, SHOW VIEW ON databasename.* TO 'username'@'localhost' IDENTIFIED BY 'password';
 FLUSH PRIVILEGES;
