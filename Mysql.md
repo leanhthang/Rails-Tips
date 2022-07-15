@@ -5,14 +5,14 @@ or
 mysql -u root -p
 ```
 # Create user
-```CREATE USER 'new_user'@'%%' IDENTIFIED BY 'new_password';```
+```CREATE USER 'new_user'@'%' IDENTIFIED BY 'new_password';```
 ### Set permission read only
 ```sql
-GRANT SELECT, SHOW VIEW ON databasename.* TO 'username'@'%%' IDENTIFIED BY 'password';
+GRANT SELECT, SHOW VIEW ON databasename.* TO 'username'@'%' IDENTIFIED BY 'password';
 FLUSH PRIVILEGES;
 ```
 ### Check user exited
-> LECT User, Host FROM mysql.user;
+> SELECT User, Host FROM mysql.user;
 ### Drop user
 > DROP USER 'username'@'host';
 # Change pass
