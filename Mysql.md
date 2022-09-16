@@ -26,3 +26,21 @@ FLUSH PRIVILEGES;
 
 # Restore
 mysql -u [user] -p [database_name] < [filename].sql
+
+
+<!-- Fix -->
+# MYSQL Incorrect string value: '\xF0\x93\x80\x80'
+```SQL
+-- Change a database
+ALTER DATABASE [database_name] 
+  CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci; 
+
+-- Change a table
+ALTER TABLE [table_name] 
+  CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; 
+
+-- Change a column
+ALTER TABLE [table_name] 
+  CHANGE [column_name] [column_name] VARCHAR(255) 
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
