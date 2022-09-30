@@ -1,3 +1,5 @@
+# Auto start after reboot
+sudo update-rc.d mysql defaults
 # connect
 ```
 sudo mysql -u root
