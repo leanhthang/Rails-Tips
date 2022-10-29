@@ -7,7 +7,8 @@ or
 mysql -u root -p
 ```
 # Create user
-```CREATE USER 'new_user'@'%' IDENTIFIED BY 'new_password';```
+```CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'new_password';```
+ALTER USER 'userName'@'localhost' IDENTIFIED BY 'New-Password-Here';
 ### Set permission read only
 ```sql
 GRANT SELECT, SHOW VIEW ON databasename.* TO 'username'@'%' IDENTIFIED BY 'password';
