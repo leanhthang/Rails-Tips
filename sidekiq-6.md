@@ -43,6 +43,7 @@ Add file sidekiq.service to systemd folder. This file tells systemd how to run S
 
 # Sidekiq service
 > detect gem path ```gem environment```
+> RUN after create: systemctl daemon-reload 
 
 ```ruby
 # Ubuntu && RBENV
