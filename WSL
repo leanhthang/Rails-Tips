@@ -1,1 +1,4 @@
 https://learn.microsoft.com/vi-vn/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package
+
+# Upgrade existed server 
+>> wsl --set-version Ubuntu-20.04 2
