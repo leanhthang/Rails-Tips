@@ -113,3 +113,25 @@ Sidekiq::Queue.all.map(&:clear)
 # Clear all redis
 Sidekiq.redis(&:flushdb)
 
+
+<!-- SETUP MULTIPLE SERTVER -->
+
+This gem does support systemd and sidekiq 6.0 but currently sidekiq is locked to version < 6, so I've created fork which allow to use newest sidekiq 6.0.3: https://github.com/rwojnarowski/capistrano-sidekiq
+
+In short, to get this gem working with sidekiq 6.0:
+In Gemfile:
+gem "capistrano-sidekiq", git: "https://github.com/rwojnarowski/capistrano-sidekiq.git"
+In deploy.rb:
+set :init_system, :systemd
+On your server:
+loginctl enable-linger USERACCOUNT
+From repo directory run:
+bundle exec cap sidekiq:install
+You may need to enable new service on your server, so:
+systemctl --user enable sidekiq-production
+systemctl --user start sidekiq-production
+Check the status:
+systemctl --user status sidekiq-production
+and deploy new app as usual with Capistrano
+
+
