@@ -28,6 +28,9 @@ FLUSH PRIVILEGES;
   mysqldump -u USERNAME -p DATABASE --ignore-table=DATABASE.table1 > database.sql
 
 # Restore
+```If change database name
+sed -i 's/`MYDATABASE`/`MYNEWDATABASE`/g' mydump.sql
+``
 mysql -u [user] -p [database_name] < [filename].sql
 
 
