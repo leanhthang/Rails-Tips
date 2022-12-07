@@ -116,6 +116,7 @@ Sidekiq.redis(&:flushdb)
 
 <!-- SETUP MULTIPLE SERTVER -->
 
+```ruby
 This gem does support systemd and sidekiq 6.0 but currently sidekiq is locked to version < 6, so I've created fork which allow to use newest sidekiq 6.0.3: https://github.com/rwojnarowski/capistrano-sidekiq
 
 In short, to get this gem working with sidekiq 6.0:
@@ -134,4 +135,4 @@ Check the status:
 systemctl --user status sidekiq-production
 and deploy new app as usual with Capistrano
 
-
+```
