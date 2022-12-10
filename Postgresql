@@ -1,0 +1,45 @@
+sudo apt-get install postgresql postgresql-contrib libpq-dev
+
+vim /etc/postgresql/9.1/main/pg_hba.conf
+9.1 is version return form upper command
+and replace
+local all postgres peer
+to
+local all postgres md5
+
+vim /etc/postgresql/9.1/main/pg_hba.conf
+
+#TYPE DATABASE USER ADDRESS METHOD 
+host all all 127.0.0.1/32 trust 
+host all PC 127.0.0.1/32 trust 
+host all all ::1/128 trust
+
+Create user:
+CREATE ROLE name LOGIN;
+CREATE USER name;
+add role:
+ALTER ROLE name [ [ WITH ] option [ ... ] ]
+where option can be:
+
+      SUPERUSER | NOSUPERUSER
+    | CREATEDB | NOCREATEDB
+    | CREATEROLE | NOCREATEROLE
+    | CREATEUSER | NOCREATEUSER
+    | INHERIT | NOINHERIT
+    | LOGIN | NOLOGIN
+    | REPLICATION | NOREPLICATION
+    | CONNECTION LIMIT connlimit
+    | [ ENCRYPTED | UNENCRYPTED ] PASSWORD 'password'
+    | VALID UNTIL 'timestamp'
+
+ALTER ROLE name RENAME TO new_name
+
+ALTER ROLE name [ IN DATABASE database_name ] SET configuration_parameter { TO | = } { value | DEFAULT }
+ALTER ROLE name [ IN DATABASE database_name ] SET configuration_parameter FROM CURRENT
+ALTER ROLE name [ IN DATABASE database_name ] RESET configuration_parameter
+ALTER ROLE name [ IN DATABASE database_name ] RESET ALL
+
+show all roles:
+\du
+https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps--2 
+create user with command line: createuser test_user
