@@ -14,6 +14,11 @@ ALTER USER 'userName'@'localhost' IDENTIFIED BY 'New-Password-Here';
 GRANT SELECT, SHOW VIEW ON databasename.* TO 'username'@'%' IDENTIFIED BY 'password';
 FLUSH PRIVILEGES;
 ```
+### Set Full permission
+```sql
+GRANT ALL PRIVILEGES ON 'yourDB'.* TO 'user1'@localhost IDENTIFIED BY 'password1';
+FLUSH PRIVILEGES;
+```
 ### Check user exited
 > SELECT User, Host FROM mysql.user;
 ### Drop user
