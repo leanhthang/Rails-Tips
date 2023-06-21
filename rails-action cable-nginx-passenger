@@ -1,0 +1,78 @@
+worker_processes 4; # Set to what your server can handle
+
+events {
+  worker_connections 1024; # Set to what your server can handle
+  use epoll;
+  multi_accept on;
+}
+
+http {
+  include mime.types;
+
+  passenger_root /path/to/your/passenger; # bundle show passenger
+  passenger_ruby /path/to/your/ruby; # which ruby
+  passenger_nodejs /path/to/your/node; # which node
+
+  server {
+    listen 80;
+    server_name your-domain.com;
+
+    # Node.js Front-End
+    #
+    # Expected folder structure:
+    #
+    # node-app
+    # |-- public/
+    #     |-- index.html, etc.
+    # app.js
+    #
+    root /path/to/node-app/public;
+
+    # Root /
+    location / {
+      passenger_app_env production;
+      passenger_app_group_name node_app; # Choose a unique name
+      passenger_app_root /path/to/node-app;
+      passenger_app_type node;
+      passenger_enabled on;
+      passenger_startup_file app.js;
+    }
+
+    # Rails API with Action Cable
+    #
+    # Expected folder structure:
+    #
+    # rails-app
+    # |-- app/
+    # |-- public/
+    # |-- etc.
+    # |-- cable
+    #     |-- config.ru
+    # config.ru
+    #
+    # API /api
+    location ~ ^/api(/.*|$) {
+      alias /path/to/rails-app/public$1;
+      passenger_app_env production;
+      passenger_app_group_name rails_app; # Choose a unique name
+      passenger_app_root /path/to/rails-app;
+      passenger_app_type rack;
+      passenger_base_uri /api;
+      passenger_enabled on;
+      passenger_startup_file config.ru;
+    }
+
+    # Action Cable /cable
+    location ~ ^/cable(/.*|$) {
+      alias /path/to/rails-app/public$1;
+      passenger_app_env production;
+      passenger_app_group_name rails_app_action_cable; # Choose a unique name
+      passenger_app_root /path/to/rails-app;
+      passenger_app_type rack;
+      passenger_base_uri /cable;
+      passenger_enabled on;
+      passenger_force_max_concurrent_requests_per_process 0;
+      passenger_startup_file cable/config.ru;
+    }
+  }
+}
