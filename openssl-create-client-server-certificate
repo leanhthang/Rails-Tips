@@ -1,0 +1,538 @@
+https://www.golinuxcloud.com/openssl-create-client-server-certificate/
+
+Table of Contents	
+Lab Environment
+Install OpenSSL
+OpenSSL create client certificate
+Create client private key
+Create Certificate Signing Request (CSR) using client Key
+Configure openssl x509 extensions for client certificate
+Create client certificate
+Openssl verify client certificate content
+OpenSSL create server certificate
+Create server private key
+Create Certificate Signing Request (CSR) using Server Key
+Configure openssl x509 extensions for server certificate
+Create server certificate
+Openssl verify server certificate content
+Configure Apache with SSL (HTTPS)
+Install Apache Package
+Arrange all the server certificates for client authentication
+Change Port Number of Apache Server
+Configure Apache Virtual Hosting
+Restart Apache service
+Verify TCP Handshake using Client Server Certificates
+In this article we will use OpenSSL create client certificate along with server certificate which we will use for encrypted communication for our Apache webserver using HTTPS. These client and server certificates will be signed using CA key and CA certificate bundle which we have created in our previous article.
+
+I have already written multiple articles on OpenSSL, I would recommend you to also check them for more overview on openssl examples:
+
+Beginners guide to understand all Certificate related terminologies used with openssl
+Generate openssl self-signed certificate with example
+Create your own Certificate Authority and generate a certificate signed by your CA
+Create certificate chain (CA bundle) using your own Root CA and Intermediate Certificates with openssl
+Create server and client certificates using openssl for end to end encryption with Apache over SSL
+Create SAN Certificate to protect multiple DNS, CN and IP Addresses of the server in a single certificate
+ 
+
+The list of steps to be followed to generate server client certificate using OpenSSL and perform further verification using Apache HTTPS:
+
+Create server certificate
+Generate server key
+Generate Certificate Signing Request (CSR) with server key
+Generate and Sign the server certificate using CA key and certificate
+Create client certificate
+Generate client key
+Generate Certificate Signing request (CSR) with client key
+Generate and Sign the client certificate using CA key and certificate
+Configure Apache with SSL
+Verify openssl server client certificates
+ALSO READ:
+Many people miss most important points when they are creating a CSR. If you are not sure about what should be added for individual fields of CSR then I would recommend to read this article before you generate CSR:
+ALSO READ:
+OpenSSL create self signed certificate Linux with example
+Things to consider when creating CSR with OpenSSL
+
+ 
+
+Lab Environment
+I have 3 Virtual Machines in my environment which are installed with CentOS 8 running on Oracle VirtualBox. It is important that you use proper hostname or IP Address in the Common Name section while generate Certificate Signing Request or else the SSL encryption between server and client with fail.
+
+Below are the details of my servers on which I will create client certificate along with other certificates for complete validation.
+
+Node1	Node2	Node3
+Hostname	centos8-1	centos8-2	centos8-3
+FQDN	centos8-1.example.com	centos8-2.example.com	centos8-3.example.com
+IP Address	10.10.10.12	10.10.10.16	10.10.10.17
+Purpose	Create CA and server client certificates	Client using which we will connect to Apache server	Server where Apache service will be running
+ 
+
+Install OpenSSL
+On RHEL/CentOS 7/8 you can use yum or dnf respectively while on Ubuntu use apt-get to install openssl rpm
+
+NOTE:
+On RHEL system you must have an active subscription to RHN or you can configure a local offline repository using which "yum" package manager can install the provided rpm and it's dependencies.
+bash
+
+[root@centos8-1 ~]# yum -y install openssl
+ 
+
+OpenSSL create client certificate
+Let us first create client certificate using openssl.
+
+ 
+
+Create client private key
+To create client certificate we will first create client private key using openssl command. In this example we are creating client key client.key.pem with 4096 bit size.
+
+HINT:
+We are not using any encryption with openssl to create client private key to avoid any passphrase prompt. but you can choose to use -des3 or any other encryption in the below command
+bash
+
+[root@centos8-1 certs]# openssl genrsa -out client.key.pem 4096
+Generating RSA private key, 4096 bit long modulus (2 primes)
+...........................................................................
+.................++++
+...............................................++++
+e is 65537 (0x010001)
+ 
+
+ALSO READ:
+Renew self-signed certificate OpenSSL [Step-by-Step]
+Create Certificate Signing Request (CSR) using client Key
+Next we will use our client key to generate certificate signing request (CSR) client.csr using openssl command.
+
+bash
+
+[root@centos8-1 certs]# openssl req -new -key client.key.pem -out client.csr
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:IN
+State or Province Name (full name) []:Karnataka
+Locality Name (eg, city) [Default City]:bengaluru
+Organization Name (eg, company) [Default Company Ltd]:GoLinuxCloud
+Organizational Unit Name (eg, section) []:R&D
+Common Name (eg, your name or your server's hostname) []:centos8-2
+Email Address []:admin@golinuxcloud.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+ 
+
+Configure openssl x509 extensions for client certificate
+It is important to define openssl x509 extensions to be used to create client certificate. You can read more about these extensions at the man page of openssl x509.
+
+bash
+
+[root@centos8-1 certs]# cat client_cert_ext.cnf
+basicConstraints = CA:FALSE
+nsCertType = client, email
+nsComment = "OpenSSL Generated Client Certificate"
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer
+keyUsage = critical, nonRepudiation, digitalSignature, keyEncipherment
+extendedKeyUsage = clientAuth, emailProtection
+Here,
+
+bash
+
+basicConstraints      : An end user certificate must either set CA to FALSE or exclude the extension entirely
+nsCertType            : This is Netscape Certificate Type which consists of a list of flags to be included. 
+                        Acceptable values for nsCertType are: client, server, email, objsign, reserved, sslCA, emailCA, objCA
+nsComment             : Netscape Comment (nsComment) is a string extension containing a comment which will be displayed 
+                        when the certificate is viewed in some browsers.
+subjectKeyIdentifier  : This is really a string extension and can take two possible values. Either the word hash which will 
+                        automatically follow the guidelines in RFC3280 or a hex string giving the extension value to include.
+authorityKeyIdentifier: The authority key identifier extension permits two options. keyid and issuer: both can take the optional value "always".
+keyUsage              : Key usage is a multi valued extension consisting of a list of names of the permitted key usages.
+extendedKeyUsage      : This extensions consists of a list of usages indicating purposes for which the certificate public key can be used for,
+ 
+
+ALSO READ:
+Beginners guide on PKI, Certificates, Extensions, CA, CRL and OCSP
+Create client certificate
+Next using openssl x509 will issue our client certificate and sign it using the CA key and CA certificate chain which we had created in our previous article.
+If you do not have CA certificate chain bundle then you can also create your own CA certificate and then use that CA to sign your client certificate.
+This client certificate will be valid for 365 days and will be encrypted with sha256 algorithm
+Since our CA key is encrypted with passphrase, I have provided the passphrase file to avoid any password prompt on the screen which we had created earlier.
+Use -extfile to define the x509 extensions which we will use to create client certificate. Alternatively you could have also used openssl.cnf and just provide -extensions argument with the key value used in openssl.cnf
+This command will create client certificate client.cert.pem
+bash
+
+[root@centos8-1 certs]# openssl x509 -req -in client.csr -CA /root/tls/intermediate/certs/ca-chain-bundle.cert.pem -CAkey /root/tls/intermediate/private/intermediate.cakey.pem -out client.cert.pem -CAcreateserial -days 365 -sha256 -extfile client_cert_ext.cnf
+Signature ok
+subject=C = IN, ST = Karnataka, L = bengaluru, O = GoLinuxCloud, OU = R&D, CN = centos8-2, emailAddress = admin@golinuxcloud.com
+Getting CA Private Key
+ 
+
+Openssl verify client certificate content
+In this section we have created below files:
+
+client.key.pem   ⇒ Client private key
+client.csr           ⇒ Client CSR
+client.cert.pem  ⇒ Client Certificate
+ALSO READ:
+Shell script to generate certificate OpenSSL [No Prompts]
+You can use below commands to verify the content of these certificates:
+
+bash
+
+# openssl rsa -noout -text -in client.key.pem
+# openssl req -noout -text -in client.csr
+# openssl x509 -noout -text -in client.cert.pem
+ 
+
+OpenSSL create server certificate
+Next we will create server certificate using openssl.
+
+ 
+
+Create server private key
+To create server certificate we will first create server private key using openssl command. In this example we are creating server key server.key.pem with 4096 bit size.
+
+HINT:
+We are not using any encryption with openssl to create server private key to avoid any passphrase prompt. but you can choose to use -des3 or any other encryption in the below command
+bash
+
+[root@centos8-1 certs]# openssl genrsa -out server.key.pem 4096
+Generating RSA private key, 4096 bit long modulus (2 primes)
+....++++
+.......................++++
+e is 65537 (0x010001)
+ 
+
+Create Certificate Signing Request (CSR) using Server Key
+Next we will use our server key server.key.pem to generate certificate signing request (CSR) server.csr using openssl command.
+
+IMPORTANT NOTE:
+It is very important that you provide the hostname or IP address value of your server node with Common Name or else the server client TCP handshake will fail if the hostname does not matches the CN of the server certificate. Our server hostname is centos8-3 as you can check under Lab Environment.
+bash
+
+[root@centos8-1 certs]# openssl req -new -key server.key.pem -out server.csr
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:IN
+State or Province Name (full name) []:Karnataka
+Locality Name (eg, city) [Default City]:Bengaluru
+Organization Name (eg, company) [Default Company Ltd]:GoLinuxCloud
+Organizational Unit Name (eg, section) []:R&D
+Common Name (eg, your name or your server's hostname) []:centos8-3
+Email Address []:admin@golinuxcloud.com
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+ 
+
+ALSO READ:
+How to revoke missing/lost certificate OpenSSL [Step-by-Step]
+Configure openssl x509 extensions for server certificate
+It is again important to define openssl x509 extensions to be used to create server certificate. These extensions value will differentiate between your server and client certificate. You can read more about these extensions at the man page of openssl x509.
+
+bash
+
+[root@centos8-1 certs]# cat server_cert_ext.cnf
+basicConstraints = CA:FALSE
+nsCertType = server
+nsComment = "OpenSSL Generated Server Certificate"
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer:always
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+You can compare these values with what we defined under our client certificate extensions
+
+ 
+
+Create server certificate
+We will use similar command as used to create client certificate, openssl x509 to create server certificate and sign it using our server.csr which we created above.
+We will use CA certificate (certificate bundle) and CA key from our previous article to issue and sign the certificate
+The server certificate will be valid for 365 days and encrypted with sha256 algorithm
+Define the absolute path and filename of the configuration file which contains openssl x509 extensions for your server certificate using -extfile. If you are using default openssl.cnf then you can also create an extensions section in your openssl.cnf and use -extensions with the key value from openssl.cnf to define your extensions.
+The subject in the output contains our CSR details which we provided with server.csr
+This command will create server certificate server.cert.pem
+bash
+
+[root@centos8-1 certs]# openssl x509 -req -in server.csr -CA /root/tls/intermediate/certs/ca-chain-bundle.cert.pem -CAkey /root/tls/intermediate/private/intermediate.cakey.pem -out server.cert.pem -CAcreateserial -days 365 -sha256 -extfile server_cert_ext.cnf
+Signature ok
+subject=C = IN, ST = Karnataka, L = Bengaluru, O = GoLinuxCloud, OU = R&D, CN = centos8-3, emailAddress = admin@golinuxcloud.com
+Getting CA Private Key
+ 
+
+ALSO READ:
+Things to consider when creating CSR with OpenSSL
+Openssl verify server certificate content
+In this section we have created below files:
+
+server.key.pem   ⇒ Server private key
+server.csr           ⇒ Server CSR
+server.cert.pem  ⇒ Server Certificate
+You can use below commands to verify the content of these certificates:
+
+bash
+
+# openssl rsa -noout -text -in server.key.pem
+# openssl req -noout -text -in server.csr
+# openssl x509 -noout -text -in server.cert.pem
+ 
+
+Configure Apache with SSL (HTTPS)
+I will not go much into the detail steps to configure Apache with HTTPS as that in not our primary agenda of this article. I will configure a basic webserver to use Port 8443 on centos8-3
+
+ 
+
+Install Apache Package
+To setup HTTPS apache server we need to install httpd and mod_ssl. In RHEL/CentoS 8 the default package manager is DNF instead of traditional YUM
+
+bash
+
+[root@centos8-3 ~]# dnf -y install httpd mod_ssl
+ 
+
+Arrange all the server certificates for client authentication
+I have created a new directory certs under /etc/httpd/conf.d where I will store all the server certificates and the same path is provided in our httpd.cond
+
+bash
+
+[root@centos8-3 certs]# mkdir /etc/httpd/conf.d/certs
+Copy server certificates to the server node i.e. centos8-3. We are using scp to copy files from one server to another but you can choose any other tool to transfer the certificates securely over the network.
+
+bash
+
+[root@centos8-1 certs]# scp server.key.pem server.cert.pem /root/tls/intermediate/certs/ca-chain-bundle.cert.pem  centos8-3:/etc/httpd/conf.d/certs/
+root@centos8-3's password:
+server.key.pem                                                                                    100% 3243     3.8MB/s   00:00
+server.cert.pem                                                                                   100% 2484     2.7MB/s   00:00
+ca-chain-bundle.cert.pem                                                                          100% 4240     5.9MB/s   00:00
+ 
+
+Change Port Number of Apache Server
+Since we plan to use a custom port 8443 to verify our server client authentication and TCP handshake, we will change the Listen value from 80 to 8443 in httpd.conf
+
+bash
+
+[root@centos8-3 ~]# vim /etc/httpd/conf/httpd.conf
+Listen 8443
+ 
+
+ALSO READ:
+Generate duplicate certificates OpenSSL CA [Same CN]
+Configure Apache Virtual Hosting
+I have added below virtual hosting content at the end of "/etc/httpd/conf/httpd.conf". You can read more about Apache Virtual Hosting in another article.
+
+bash
+
+<VirtualHost *:8443>
+   SSLEngine On
+   SSLCertificateFile /etc/httpd/conf.d/certs/server.cert.pem
+   SSLCertificateChainFile /etc/httpd/conf.d/certs/ca-chain-bundle.cert.pem
+   SSLCertificateKeyFile /etc/httpd/conf.d/certs/server.key.pem
+   ServerAdmin root@centos8-3.example.com
+   DocumentRoot /var/www/html
+   ServerName centos8-3.example.com
+   ErrorLog logs/centos8-3.example.com-error_log
+   CustomLog logs/centos8-3.example.com-access_log common
+</VirtualHost>
+ 
+
+For more list of supported options follow man page of mod_ssl.
+
+Here,
+
+bash
+
+SSLEngine               : This section is used to enable SSL/TLS for a that virtual host.
+SSLCertificateFile      : This directive points to a file with certificate data in PEM format
+SSLCertificateChainFile : This directive sets the optional all-in-one file where you can assemble 
+                          the certificates of Certification Authorities (CA) which form the certificate
+                          chain of the server certificate
+SSLCertificateKeyFile   : This directive points to the PEM-encoded private key file for the server
+HINT:
+If you do not have certificate chain file then instead of using SSLCertificateChainFile, you can choose SSLCACertificateFile which was used to sign the client certificates.
+ 
+
+Restart Apache service
+To activate the changes we must restart the httpd services and then you can use netstat or any other tool to check the list of listening ports in Linux.
+
+bash
+
+[root@centos8-3 ~]# systemctl restart httpd
+As you see port 8443 is in LISTEN state so our changes are activated.
+
+bash
+
+[root@centos8-3 ~]# netstat -ntlp | grep 8443
+tcp6       0      0 :::8443                 :::*                    LISTEN      5602/httpd
+HINT:
+I have stopped firewalld service (systemctl stop firewalld) and disabled SELinux for the verification on my server centos8-3 node.
+ 
+
+Verify TCP Handshake using Client Server Certificates
+First let us try to connect our Apache webserver without providing any client certificates using curl command and verbose output.
+
+HINT:
+If curl command is not available then you can install curl using "dnf install curl" on your client node.
+bash
+
+[root@centos8-1 certs]# curl  https://centos8-3:8443 -v                                                                             
+* Rebuilt URL to: https://centos8-3:8443/
+*   Trying 10.10.10.17...
+* TCP_NODELAY set
+* Connected to centos8-3 (10.10.10.17) port 8443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*   CAfile: /etc/pki/tls/certs/ca-bundle.crt
+  CApath: none
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.3 (OUT), TLS alert, unknown CA (560):
+* SSL certificate problem: self signed certificate in certificate chain
+* Closing connection 0
+curl: (60) SSL certificate problem: self signed certificate in certificate chain
+More details here: https://curl.haxx.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the web page mentioned above.
+As expected we are getting Failed TCP handshake error and our client was unable to connect to the web server.
+
+ALSO READ:
+Create Certificate Authority and sign a certificate with Root CA
+ 
+
+Next let us try to connect to our web server using the client certificates. Use --key to define the client key file, --cert to define the client certificate and --cacert to define the CA certificate we used to sign the certificates followed by the web server address.
+
+bash
+
+[root@centos8-1 certs]# curl --key client.key.pem  --cert client.cert.pem --cacert /root/tls/intermediate/certs/ca-chain-bundle.cert.pem  https://centos8-3:8443 -v
+* Rebuilt URL to: https://centos8-3:8443/
+*   Trying 10.10.10.17...
+* TCP_NODELAY set
+* Connected to centos8-3 (10.10.10.17) port 8443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*   CAfile: /root/tls/intermediate/certs/ca-chain-bundle.cert.pem
+  CApath: none
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.3 (OUT), TLS handshake, [no content] (0):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN, server accepted to use http/1.1
+* Server certificate:
+*  subject: C=IN; ST=Karnataka; L=Bengaluru; O=GoLinuxCloud; OU=R&D; CN=centos8-3; emailAddress=admin@golinuxcloud.com
+*  start date: Apr 11 07:35:43 2020 GMT
+*  expire date: Apr 11 07:35:43 2021 GMT
+*  common name: centos8-3 (matched)
+*  issuer: C=IN; ST=Some-State; O=GoLinuxCloud; CN=centos8-1 Intermediate CA; emailAddress=admin@golinuxcloud.com
+*  SSL certificate verify ok.
+* TLSv1.3 (OUT), TLS app data, [no content] (0):
+> GET / HTTP/1.1
+> Host: centos8-3:8443
+> User-Agent: curl/7.61.1
+> Accept: */*
+>
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+* TLSv1.3 (IN), TLS app data, [no content] (0):
+< HTTP/1.1 200 OK
+< Date: Sat, 11 Apr 2020 07:37:28 GMT
+< Server: Apache/2.4.37 (centos) OpenSSL/1.1.1c
+< Last-Modified: Fri, 31 Jan 2020 17:29:35 GMT
+< ETag: "29-59d72ead47e18"
+< Accept-Ranges: bytes
+< Content-Length: 41
+< Content-Type: text/html; charset=UTF-8
+<
+* Connection #0 to host centos8-3 left intact
+Welcome at the Ansible managed web server
+So our server and client certificate authentication is working as expected.
+
+ALSO READ:
+4 step quick guide to install SSL Certificate on Nginx
+ 
+
+But what if you try to access the web server using IP address instead of hostname? Let us examine this scenario:
+
+bash
+
+[root@centos8-1 tls]# curl --key private/client.key.pem  --cert certs/client.cert.pem --cacert intermediate/certs/ca-chain-bundle.cert.pem  https://10.10.10.17:8443 -v
+* Rebuilt URL to: https://10.10.10.17:8443/
+*   Trying 10.10.10.17...
+* TCP_NODELAY set
+* Connected to 10.10.10.17 (10.10.10.17) port 8443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* successfully set certificate verify locations:
+*   CAfile: intermediate/certs/ca-chain-bundle.cert.pem
+  CApath: none
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+* TLSv1.3 (IN), TLS handshake, [no content] (0):
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.3 (OUT), TLS handshake, [no content] (0):
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+* ALPN, server accepted to use http/1.1
+* Server certificate:
+*  subject: C=IN; ST=Some-State; L=BANGALORE; O=GoLinuxCloud; CN=centos8-3
+*  start date: Apr  9 01:49:53 2020 GMT
+*  expire date: Apr  9 01:49:53 2021 GMT
+* SSL: certificate subject name 'centos8-3' does not match target host name '10.10.10.17'
+* Closing connection 0
+* TLSv1.3 (OUT), TLS alert, [no content] (0):
+* TLSv1.3 (OUT), TLS alert, close notify (256):
+curl: (51) SSL: certificate subject name 'centos8-3' does not match target host name '10.10.10.17'
+This is the reason I had stressed on the point to make sure you give proper Common Name for server when you create server certificate. The provided Common Name will be used to match the server request and further authentication.
+
+ALSO READ:
+How to add X.509 extensions to certificate OpenSSL
+Now it also possible that you would like to reach your web server using other CNAME or IP Addresses so in such case you will end up creating multiple server certificates or to avoid this we can create SAN certificates.
+
+ 
+
+We will learn more about SAN certificates in the next article
+
+ 
+
+Lastly I hope the steps from the article to create client certificate and create server certificate using openssl to establish an encrypted communication between server and client on Linux was helpful. So, let me know your suggestions and feedback using the comment section.
+
+ 
+
+Related Searches: openssl client certificate howto, openssl create client certificate with private key, openssl generate client certificate, create user certificate openssl, create client certificate, how to sign a certificate with root ca, openssl create server certificate
+
