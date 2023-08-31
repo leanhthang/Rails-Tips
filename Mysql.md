@@ -72,5 +72,6 @@ SELECT @@slow_query_log_file;
 ```
 ## Find slow log 
 ```
+# slow_query.log get from query SELECT @@slow_query_log_file
 sudo find / -name "slow_query.log" -print
 ```
