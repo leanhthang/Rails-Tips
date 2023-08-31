@@ -9,8 +9,10 @@ or
 mysql -u root -p
 ```
 # Create user
-```CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'new_password';```
+```
+CREATE USER 'new_user'@'localhost' IDENTIFIED BY 'new_password';
 ALTER USER 'userName'@'localhost' IDENTIFIED BY 'New-Password-Here';
+```
 ### Set permission read only
 ```sql
 GRANT SELECT, SHOW VIEW ON databasename.* TO 'username'@'%' IDENTIFIED BY 'password';
@@ -56,4 +58,19 @@ ALTER TABLE [table_name]
 ALTER TABLE [table_name] 
   CHANGE [column_name] [column_name] VARCHAR(255) 
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+# Show slow Query
+## Active slow log
+```SQL
+-- Query 
+SET GLOBAL slow_query_log = 1;
+SET GLOBAL slow_query_log_file = 'db-slow.log'; 
+SET GLOBAL long_query_time = 2; -- Set the threshold in seconds
+-- Show status log
+SHOW VARIABLES LIKE 'slow%';
+SELECT @@slow_query_log_file;
+```
+## Find slow log 
+```
+sudo find / -name "slow_query.log" -print
 ```
