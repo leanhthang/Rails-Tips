@@ -40,7 +40,7 @@ FLUSH PRIVILEGES;
 ```If change database name
 sed -i 's/`MYDATABASE`/`MYNEWDATABASE`/g' mydump.sql
 ``
-mysql -u [user] -p [database_name] < [filename].sql
+mysql --verbose -u [user] -p [database_name] < [filename].sql
 
 
 <!-- Fix -->
