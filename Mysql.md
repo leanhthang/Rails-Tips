@@ -28,7 +28,7 @@ FLUSH PRIVILEGES;
 ### Drop user
 > DROP USER 'username'@'host';
 # Change pass
-```ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'insert_password';```
+```ALTER USER 'username'@'%' IDENTIFIED VIA mysql_native_password USING PASSWORD('password');```
 # Create database
 ```CREATE DATABASE testdb;```
 # Backup
