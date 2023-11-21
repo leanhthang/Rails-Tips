@@ -1,0 +1,7 @@
+Để kích hoạt tài khoản root, bạn có thể làm theo các bước sau:
+
+> sudo passwd root
+
+Chuyễn sang root acc
+
+> su root
