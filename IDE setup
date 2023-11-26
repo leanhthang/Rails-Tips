@@ -1,0 +1,60 @@
+## Sublime text 
+
+```ruby
+{
+  "auto_complete": true,
+  "auto_complete_commit_on_tab": true,
+  "copy_with_empty_selection": true,
+  "default_encoding": "UTF-8",
+  "detect_indentation": false,
+  "detect_slow_plugins": true,
+  "draw_minimap_border": true,
+  "draw_white_space": "all",
+  "ensure_newline_at_eof_on_save": true,
+  "font_face": "DejaVuSansMono",
+  "font_size": 11,
+  "highlight_line": true,
+  "highlight_modified_tabs": true,
+  "ignored_packages":
+  [
+	"Vintage"
+  ],
+  "index_files": true,
+  "line_padding_bottom": 1,
+  "line_padding_top": 1,
+  "original_color_scheme": "Packages/Color Scheme - Default/Monokai.tmTheme",
+  "preview_on_click": true,
+  "rulers":
+  [
+	80
+  ],
+  "save_on_focus_lost": true,
+  "show_encoding": true,
+  "show_line_endings": true,
+  "space_size": 2,
+  "tab_size": 2,
+  "translate_tabs_to_spaces": true,
+  "trim_trailing_white_space_on_save": true,
+  "word_wrap": true
+}
+
+
+/home/lat/.config/sublime-text-3/Packages/User/Default (Linux).sublime-keymap
+[
+  {"keys":["ctrl+q"],"command":"reindent","args":{"single_line":false}},
+  { "keys": ["f2"], "command": "side_bar_rename" },
+  // // { "keys": ["n","n"], "command": "advanced_new_file" },
+  // { "keys": ["alt+x"], "command": "side_bar_delete" },
+  { "keys": ["f5"], "command": "refresh_folder_list" },
+
+  { "keys": ["ctrl+space"], "command": "auto_complete" },
+  { "keys": ["ctrl+space"], "command": "replace_completion_with_auto_complete", "context":
+	[
+  	{ "key": "last_command", "operator": "equal", "operand": "insert_best_completion" },
+  	{ "key": "auto_complete_visible", "operator": "equal", "operand": false },
+  	{ "key": "setting.tab_completion", "operator": "equal", "operand": true }
+	]
+  }
+]
+
+```
